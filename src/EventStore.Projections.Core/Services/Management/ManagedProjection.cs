@@ -45,6 +45,7 @@ namespace EventStore.Projections.Core.Services.Management
             public bool? TrackEmittedStreams { get; set; }
             public long? Epoch { get; set; }
             public long? Version { get; set; }
+            public int? MaximumAllowedWritesInFlight { get; set; }
             public SerializedRunAs RunAs { get; set; }
         }
 
@@ -934,6 +935,7 @@ namespace EventStore.Projections.Core.Services.Management
             var checkpointUnhandledBytesThreshold = checkpointsEnabled ? 10*1000*1000 : 0;
             var pendingEventsThreshold = 5000;
             var maxWriteBatchLength = 500;
+            var maximumAllowedWritesInFlight = PersistedProjectionState.MaximumAllowedWritesInFlight ?? 1;
             var emitEventEnabled = PersistedProjectionState.EmitEnabled == true;
             var createTempStreams = PersistedProjectionState.CreateTempStreams == true;
             var stopOnEof = PersistedProjectionState.Mode <= ProjectionMode.OneTime;
@@ -950,7 +952,8 @@ namespace EventStore.Projections.Core.Services.Management
                 stopOnEof,
                 false,
                 trackEmittedStreams,
-                checkpointAfterMs);
+                checkpointAfterMs,
+                maximumAllowedWritesInFlight);
             return projectionConfig;
         }
 

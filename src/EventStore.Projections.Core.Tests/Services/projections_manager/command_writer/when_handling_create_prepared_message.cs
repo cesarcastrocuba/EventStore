@@ -40,7 +40,8 @@ namespace EventStore.Projections.Core.Tests.Services.projections_manager.command
                 true,
                 true,
                 true,
-                10000);
+                10000,
+                1);
 
             var builder = new SourceDefinitionBuilder();
             builder.FromStream("s1");
