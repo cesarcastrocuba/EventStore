@@ -480,15 +480,15 @@ namespace EventStore.Projections.Core.Services.Processing
             var delayInSeconds = MaxRetryCount - retryCount;
             if (delayInSeconds == 0)
             {
-                _ioDispatcher.WriteEvent(
-                    _metadataStreamId, ExpectedVersion.Any, _submittedWriteMetaStreamEvent, _writeAs,
+                _ioDispatcher.QueueWriteEvents(_instanceId,
+                    _metadataStreamId, ExpectedVersion.Any, new Event[]{_submittedWriteMetaStreamEvent}, _writeAs,
                     m => HandleMetadataWriteCompleted(m, retryCount));
             }
             else
             {
                 _ioDispatcher.Delay(TimeSpan.FromSeconds(delayInSeconds),
-                    () => _ioDispatcher.WriteEvent(
-                            _metadataStreamId, ExpectedVersion.Any, _submittedWriteMetaStreamEvent, _writeAs,
+                    () => _ioDispatcher.QueueWriteEvents(_instanceId,
+                            _metadataStreamId, ExpectedVersion.Any, new Event[]{_submittedWriteMetaStreamEvent}, _writeAs,
                             m => HandleMetadataWriteCompleted(m, retryCount)));
             }
         }
